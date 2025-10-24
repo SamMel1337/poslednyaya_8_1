@@ -108,3 +108,4 @@ class HabitTracking(models.Model):
         elif not self.is_completed:
             self.completed_at = None
         super().save(*args, **kwargs)
+
