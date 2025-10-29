@@ -12,11 +12,7 @@ class TelegramService:
         """Отправка сообщения в Telegram"""
         url = f"{self.base_url}/sendMessage"
 
-        payload = {
-            'chat_id': chat_id,
-            'text': message,
-            'parse_mode': 'HTML'
-        }
+        payload = {"chat_id": chat_id, "text": message, "parse_mode": "HTML"}
 
         try:
             response = requests.post(url, json=payload, timeout=10)
@@ -42,9 +38,7 @@ class TelegramService:
         """Установка webhook для бота"""
         url = f"{self.base_url}/setWebhook"
 
-        payload = {
-            'url': webhook_url
-        }
+        payload = {"url": webhook_url}
 
         try:
             response = requests.post(url, json=payload, timeout=10)

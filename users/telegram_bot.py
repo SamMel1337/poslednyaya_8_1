@@ -1,5 +1,4 @@
 import json
-import requests
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -14,17 +13,17 @@ def telegram_webhook(request):
     """Webhook для обработки сообщений от Telegram бота"""
     try:
         data = json.loads(request.body)
-        message = data.get('message', {})
-        chat_id = message.get('chat', {}).get('id')
-        text = message.get('text', '').strip()
+        message = data.get("message", {})
+        chat_id = message.get("chat", {}).get("id")
+        text = message.get("text", "").strip()
 
         if not chat_id:
-            return JsonResponse({'status': 'error', 'message': 'No chat id'})
+            return JsonResponse({"status": "error", "message": "No chat id"})
 
         telegram_service = TelegramService()
 
         # Обработка команд
-        if text == '/start':
+        if text == "/start":
             welcome_message = (
                 "👋 Добро пожаловать в бот для отслеживания привычек!\n\n"
                 "Чтобы подключить бота к вашему аккаунту:\n"
@@ -35,7 +34,7 @@ def telegram_webhook(request):
             )
             telegram_service.send_message(chat_id, welcome_message)
 
-        elif text == '/help':
+        elif text == "/help":
             help_message = (
                 "📋 Доступные команды:\n\n"
                 "/start - Начало работы с ботом\n"
@@ -46,7 +45,7 @@ def telegram_webhook(request):
             )
             telegram_service.send_message(chat_id, help_message)
 
-        elif text == '/status':
+        elif text == "/status":
             # Проверяем, подключен ли пользователь
             try:
                 user = User.objects.get(telegram_chat_id=chat_id)
@@ -74,20 +73,20 @@ def telegram_webhook(request):
             )
             telegram_service.send_message(chat_id, unknown_message)
 
-        return JsonResponse({'status': 'ok'})
+        return JsonResponse({"status": "ok"})
 
     except Exception as e:
         print(f"Error in telegram webhook: {e}")
-        return JsonResponse({'status': 'error', 'message': str(e)})
+        return JsonResponse({"status": "error", "message": str(e)})
 
 
 def setup_webhook(request):
     """Установка webhook для Telegram бота"""
     if not settings.DEBUG:
-        return JsonResponse({'error': 'Only available in debug mode'})
+        return JsonResponse({"error": "Only available in debug mode"})
 
     webhook_url = "https://yourdomain.com/api/users/telegram/webhook/"
     telegram_service = TelegramService()
     result = telegram_service.set_webhook(webhook_url)
 
-    return JsonResponse({'status': 'webhook set', 'result': result})
+    return JsonResponse({"status": "webhook set", "result": result})

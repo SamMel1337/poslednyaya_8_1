@@ -2,7 +2,7 @@ from celery import shared_task
 import requests
 from django.utils import timezone
 from django.conf import settings
-from users.models import  TelegramUser
+from users.models import TelegramUser
 from .models import Habit
 
 
@@ -11,18 +11,19 @@ def send_telegram_reminder(habit_id):
     try:
         habit = Habit.objects.get(id=habit_id)
         telegram_user = TelegramUser.objects.filter(
-            user=habit.user,
-            is_active=True
+            user=habit.user, is_active=True
         ).first()
 
         if not telegram_user:
             return
 
-        message = f"🔔 Напоминание о привычке!\n\n" \
-                  f"Привычка: {habit.action}\n" \
-                  f"Время: {habit.time}\n" \
-                  f"Место: {habit.place}\n" \
-                  f"Время на выполнение: {habit.time_to_complete} сек."
+        message = (
+            f"🔔 Напоминание о привычке!\n\n"
+            f"Привычка: {habit.action}\n"
+            f"Время: {habit.time}\n"
+            f"Место: {habit.place}\n"
+            f"Время на выполнение: {habit.time_to_complete} сек."
+        )
 
         send_telegram_message(telegram_user.telegram_chat_id, message)
 
@@ -33,9 +34,7 @@ def send_telegram_reminder(habit_id):
 @shared_task
 def send_daily_reminders():
     today = timezone.now().date()
-    habits = Habit.objects.filter(
-        user__telegram__is_active=True
-    ).select_related('user')
+    habits = Habit.objects.filter(user__telegram__is_active=True).select_related("user")
 
     for habit in habits:
         # Проверяем, нужно ли отправлять напоминание сегодня
@@ -48,11 +47,7 @@ def send_telegram_message(chat_id, message):
     bot_token = settings.TELEGRAM_BOT_TOKEN
     url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
 
-    payload = {
-        'chat_id': chat_id,
-        'text': message,
-        'parse_mode': 'HTML'
-    }
+    payload = {"chat_id": chat_id, "text": message, "parse_mode": "HTML"}
 
     try:
         response = requests.post(url, json=payload)

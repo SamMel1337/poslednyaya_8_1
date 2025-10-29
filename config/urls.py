@@ -24,7 +24,7 @@ from drf_yasg import openapi
 schema_view = get_schema_view(
     openapi.Info(
         title="Habit Tracker API",
-        default_version='v1',
+        default_version="v1",
         description="API для отслеживания привычек",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="admin@habittracker.com"),
@@ -35,14 +35,18 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-
+    path("admin/", admin.site.urls),
     # API endpoints
-    path('api/users/', include('users.urls')),
-    path('api/habit/', include('habit.urls')),
-
+    path("api/users/", include("users.urls")),
+    path("api/habit/", include("habit.urls")),
     # Documentation
-    path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('api/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path('api/swagger/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path(
+        "api/docs/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    path(
+        "api/redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
+    ),
+    path("api/swagger/", schema_view.without_ui(cache_timeout=0), name="schema-json"),
 ]

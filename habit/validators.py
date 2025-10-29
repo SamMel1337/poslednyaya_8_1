@@ -1,13 +1,13 @@
 from django.core.exceptions import ValidationError
-from django.utils import timezone
 
 
 def validate_habit_creation(habit):
     errors = []
-
     # Исключить одновременный выбор связанной привычки и указания вознаграждения
     if habit.related_habit and habit.reward:
-        errors.append("Нельзя одновременно указывать связанную привычку и вознаграждение.")
+        errors.append(
+            "Нельзя одновременно указывать связанную привычку и вознаграждение."
+        )
 
     # В связанные привычки могут попадать только привычки с признаком приятной привычки
     if habit.related_habit and not habit.related_habit.is_pleasant:

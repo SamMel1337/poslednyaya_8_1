@@ -3,14 +3,13 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import login
-from .models import User
+from habit.models import Habit, HabitTracking
 from .serializers import (
     UserRegistrationSerializer,
     UserLoginSerializer,
     UserProfileSerializer,
     UserUpdateSerializer,
-    TelegramConnectionSerializer
+    TelegramConnectionSerializer,
 )
 from .telegram_service import TelegramService
 
@@ -26,14 +25,17 @@ class UserRegistrationView(APIView):
             # Создаем JWT токены
             refresh = RefreshToken.for_user(user)
 
-            return Response({
-                'message': 'Пользователь успешно зарегистрирован',
-                'user': UserProfileSerializer(user).data,
-                'tokens': {
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                }
-            }, status=status.HTTP_201_CREATED)
+            return Response(
+                {
+                    "message": "Пользователь успешно зарегистрирован",
+                    "user": UserProfileSerializer(user).data,
+                    "tokens": {
+                        "refresh": str(refresh),
+                        "access": str(refresh.access_token),
+                    },
+                },
+                status=status.HTTP_201_CREATED,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -43,19 +45,22 @@ class UserLoginView(APIView):
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.validated_data['user']
+            user = serializer.validated_data["user"]
 
             # Создаем JWT токены
             refresh = RefreshToken.for_user(user)
 
-            return Response({
-                'message': 'Успешный вход',
-                'user': UserProfileSerializer(user).data,
-                'tokens': {
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                }
-            }, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "message": "Успешный вход",
+                    "user": UserProfileSerializer(user).data,
+                    "tokens": {
+                        "refresh": str(refresh),
+                        "access": str(refresh.access_token),
+                    },
+                },
+                status=status.HTTP_200_OK,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -79,11 +84,13 @@ class TelegramConnectView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
-        serializer = TelegramConnectionSerializer(data=request.data, context={'user': request.user})
+        serializer = TelegramConnectionSerializer(
+            data=request.data, context={"user": request.user}
+        )
 
         if serializer.is_valid():
             user = request.user
-            telegram_chat_id = serializer.validated_data['telegram_chat_id']
+            telegram_chat_id = serializer.validated_data["telegram_chat_id"]
 
             # Сохраняем chat_id пользователя
             user.telegram_chat_id = telegram_chat_id
@@ -102,15 +109,21 @@ class TelegramConnectView(APIView):
             success = telegram_service.send_message(telegram_chat_id, message)
 
             if success:
-                return Response({
-                    'message': 'Telegram успешно подключен',
-                    'telegram_chat_id': telegram_chat_id,
-                    'is_telegram_connected': True
-                }, status=status.HTTP_200_OK)
+                return Response(
+                    {
+                        "message": "Telegram успешно подключен",
+                        "telegram_chat_id": telegram_chat_id,
+                        "is_telegram_connected": True,
+                    },
+                    status=status.HTTP_200_OK,
+                )
             else:
-                return Response({
-                    'error': 'Не удалось отправить тестовое сообщение. Проверьте chat_id.'
-                }, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {
+                        "error": "Не удалось отправить тестовое сообщение. Проверьте chat_id."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -132,10 +145,10 @@ class TelegramDisconnectView(APIView):
         user.is_telegram_connected = False
         user.save()
 
-        return Response({
-            'message': 'Telegram успешно отключен',
-            'is_telegram_connected': False
-        }, status=status.HTTP_200_OK)
+        return Response(
+            {"message": "Telegram успешно отключен", "is_telegram_connected": False},
+            status=status.HTTP_200_OK,
+        )
 
 
 class UserLogoutView(APIView):
@@ -143,38 +156,39 @@ class UserLogoutView(APIView):
 
     def post(self, request):
         try:
-            refresh_token = request.data.get('refresh_token')
+            refresh_token = request.data.get("refresh_token")
             if refresh_token:
                 token = RefreshToken(refresh_token)
                 token.blacklist()
 
-            return Response({
-                'message': 'Успешный выход из системы'
-            }, status=status.HTTP_200_OK)
+            return Response(
+                {"message": "Успешный выход из системы"}, status=status.HTTP_200_OK
+            )
 
         except Exception as e:
-            return Response({
-                'error': 'Не удалось выйти из системы'
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Не удалось выйти из системы"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([permissions.IsAuthenticated])
 def user_habits_stats(request):
     """Статистика привычек пользователя"""
-    from habit.models import Habit, HabitTracking
 
     user = request.user
     habits = user.habits.all()
     completed_count = HabitTracking.objects.filter(
-        habit__user=user,
-        is_completed=True
+        habit__user=user, is_completed=True
     ).count()
 
-    return Response({
-        'total_habits': habits.count(),
-        'public_habits': habits.filter(is_public=True).count(),
-        'pleasant_habits': habits.filter(is_pleasant=True).count(),
-        'completed_actions': completed_count,
-        'is_telegram_connected': user.is_telegram_connected,
-    })
+    return Response(
+        {
+            "total_habits": habits.count(),
+            "public_habits": habits.filter(is_public=True).count(),
+            "pleasant_habits": habits.filter(is_pleasant=True).count(),
+            "completed_actions": completed_count,
+            "is_telegram_connected": user.is_telegram_connected,
+        }
+    )
