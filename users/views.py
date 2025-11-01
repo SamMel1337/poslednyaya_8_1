@@ -4,14 +4,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from habit.models import HabitTracking
-from .serializers import (
+from serializers import (
     UserRegistrationSerializer,
     UserLoginSerializer,
     UserProfileSerializer,
     UserUpdateSerializer,
     TelegramConnectionSerializer,
 )
-from .telegram_service import TelegramService
+from telegram_service import TelegramService
 
 
 class UserRegistrationView(APIView):

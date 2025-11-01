@@ -3,7 +3,7 @@ import requests
 from django.utils import timezone
 from django.conf import settings
 from users.models import TelegramUser
-from .models import Habit
+from models import Habit
 
 
 @shared_task
