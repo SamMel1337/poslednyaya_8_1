@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from habit.models import HabitTracking
-from serializers import (
+from .serializers import (
     UserRegistrationSerializer,
     UserLoginSerializer,
     UserProfileSerializer,
