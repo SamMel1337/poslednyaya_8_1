@@ -11,7 +11,7 @@ from .serializers import (
     UserUpdateSerializer,
     TelegramConnectionSerializer,
 )
-from telegram_service import TelegramService
+from .telegram_service import TelegramService
 
 
 class UserRegistrationView(APIView):
