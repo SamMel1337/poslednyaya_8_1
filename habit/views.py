@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.core.paginator import Paginator
-from models import Habit, HabitTracking
+from .models import Habit, HabitTracking
 from serializers import (
     UserRegistrationSerializer,
     UserSerializer,
