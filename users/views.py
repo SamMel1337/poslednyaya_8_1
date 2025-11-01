@@ -38,7 +38,6 @@ class UserRegistrationView(APIView):
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class UserLoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
