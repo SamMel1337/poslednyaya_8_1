@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from habit.models import Habit, HabitTracking
+from habit.models import HabitTracking
 from .serializers import (
     UserRegistrationSerializer,
     UserLoginSerializer,
@@ -165,7 +165,7 @@ class UserLogoutView(APIView):
                 {"message": "Успешный выход из системы"}, status=status.HTTP_200_OK
             )
 
-        except Exception as e:
+        except Exception:
             return Response(
                 {"error": "Не удалось выйти из системы"},
                 status=status.HTTP_400_BAD_REQUEST,
