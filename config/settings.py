@@ -34,6 +34,7 @@ DEBUG = True if os.getenv("DEBUG") == "True" else False
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS")
 EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
+
 REDIS_URL = os.getenv("REDIS_URL")
 CACHES = {
     "default": {
