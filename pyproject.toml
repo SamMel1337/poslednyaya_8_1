@@ -8,7 +8,9 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "python-dotenv (>=1.1.1,<2.0.0)"
+    "python-dotenv (>=1.1.1,<2.0.0)",
+    "dj-config-url (>=0.1.1,<0.2.0)",
+    "dj-database-url (>=3.0.1,<4.0.0)"
 ]
 
 
