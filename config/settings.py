@@ -11,8 +11,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from datetime import timedelta
-from urllib.request import localhost
-
 from dotenv import load_dotenv
 import os
 from pathlib import Path
