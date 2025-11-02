@@ -14,7 +14,7 @@ from datetime import timedelta
 from dotenv import load_dotenv
 import os
 from pathlib import Path
-
+import dj_database_url
 load_dotenv(override=True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -85,19 +85,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-ALLOWED_HOSTS=['localhost','127.0.0.1,0.0.0.0','testserver']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.getenv("NAME", 'medical_db'),
-        "USER": os.getenv("USER", 'medical_user'),
-        "PASSWORD": os.getenv("PASSWORD",'medical_pass'),
-        "HOST": os.getenv("HOST",'localhost'),
-        "PORT": os.getenv("PORT", '5432'),
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL)
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('NAME', 'medical_db'),
+            'USER': os.getenv('USER', 'medical_user'),
+            'PASSWORD': os.getenv('PASSWORD', 'medical_pass'),
+            'HOST': os.getenv('HOST', 'localhost'),
+            'PORT': os.getenv('PORT', '5432'),
+        }
+    }
 
 
 # Password validation
