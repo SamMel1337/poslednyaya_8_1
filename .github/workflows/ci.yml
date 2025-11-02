@@ -52,14 +52,12 @@ jobs:
       run: |
         echo "SECRET_KEY=test-secret-key-for-ci-cd" > .env
         echo "DEBUG=True" >> .env
-        echo "ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0,testserver" >> .env
         echo "DB_NAME=medical_db" >> .env
         echo "DB_USER=medical_user" >> .env
         echo "DB_PASSWORD=medical_pass" >> .env
         echo "DB_HOST=localhost" >> .env
         echo "DB_PORT=5432" >> .env
-        echo "REDIS_URL=redis://localhost:6379/0" >> .env
-        echo "EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend" >> .env
+
 
     - name: Run migrations
       run: |
