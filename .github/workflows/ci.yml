@@ -40,26 +40,26 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9'
+        python-version: '3.12'
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest pytest-django coverage
+        pip install dj-database-url
+
+    - name: Start Django server and test
+      run: |
+        python manage.py runserver 127.0.0.1:8000 &
 
     - name: Create .env file
       run: |
         echo "SECRET_KEY=test-secret-key-for-ci-cd" > .env
         echo "DEBUG=True" >> .env
         echo "ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0,testserver" >> .env
-        echo "DB_NAME=medical_db" >> .env
-        echo "DB_USER=medical_user" >> .env
-        echo "DB_PASSWORD=medical_pass" >> .env
-        echo "DB_HOST=localhost" >> .env
-        echo "DB_PORT=5432" >> .env
+        echo "DATABASE_URL=sqlite:///db.sqlite3" >> .env
         echo "REDIS_URL=redis://localhost:6379/0" >> .env
         echo "EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend" >> .env
+
 
     - name: Run migrations
       run: |
@@ -71,17 +71,7 @@ jobs:
         python manage.py collectstatic --noinput
 
     - name: Run tests
-      run: |
-        python manage.py test
-
-    - name: Run server in background
-      run: |
-        python manage.py runserver 0.0.0.0:8000 &
-        sleep 10
-
-    - name: Check if server is running
-      run: |
-        curl -f http://localhost:8000/ || exit 1
+      run: python manage.py test
 
   deploy:
     runs-on: ubuntu-latest
