@@ -2,7 +2,7 @@ name: CI/CD for Medical Diagnostics
 
 on:
   push:
-    branches: [ main, develop ]
+     branches: [ main, develop, dgango ]
   pull_request:
     branches: [ main ]
 
