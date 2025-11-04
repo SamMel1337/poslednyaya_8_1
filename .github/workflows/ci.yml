@@ -86,6 +86,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
+            cd /path/to/your/app
             git pull origin dgango                   
             docker-compose down
             docker-compose up -d --build
