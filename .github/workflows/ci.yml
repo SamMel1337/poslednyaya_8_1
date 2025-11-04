@@ -85,7 +85,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            yc compute ssh \ --id epd48p340u76hjo8bsuo \ --identity-file <путь_к_файлу_закрытого_SSH-ключа> \ --login test
+            ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "echo 'Connected!'"
             git pull origin dgango                   
             docker-compose down
             docker-compose up -d --build
