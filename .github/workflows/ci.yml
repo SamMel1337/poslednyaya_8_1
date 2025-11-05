@@ -85,7 +85,6 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_KEY1 }}
           script: |
-            /home/cloudshell-user
             git pull origin dgango                   
             docker-compose down
             docker-compose up -d --build
