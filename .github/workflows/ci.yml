@@ -85,19 +85,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_KEY1 }}
           script: |
-            deploy:
-    runs-on: ubuntu-latest
-    needs: test
-
-    steps:
-      - name: Deploy to server via SSH
-        uses: appleboy/ssh-action@v0.1.3
-        with:
-          host: ${{ secrets.SERVER_IP1 }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_KEY1 }}
-          script: |
-            /home/cloudshell-user  
+            /home/cloudshell-user
             git pull origin dgango                   
             docker-compose down
             docker-compose up -d --build
